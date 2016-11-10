@@ -16,10 +16,12 @@ import (
 
 var token string
 var url string
+var port string
 
 func init() {
 	flag.StringVar(&token, "token", "", "slack token")
 	flag.StringVar(&url, "url", "", "root url for of the server")
+	flag.StringVar(&port, "port", "", "TCP port for binding")
 }
 
 func main() {
@@ -30,12 +32,15 @@ func main() {
 	if url == "" {
 		log.Fatal("must set url flag")
 	}
+	if port == "" {
+		log.Fatal("must set tcp port")
+	}
 	slack.SetBaseURL(url)
 	slack.SetStockfishPath("/go/src/github.com/loganjspears/slackchess/internal/stockfish")
 	http.HandleFunc("/", logHandler(upHandler))
 	http.HandleFunc("/command", logHandler(commandHandler))
 	http.HandleFunc("/board/", logHandler(boardImgHandler))
-	log.Fatal(http.ListenAndServe(":5000", nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func logHandler(handler http.HandlerFunc) http.HandlerFunc {

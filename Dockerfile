@@ -27,7 +27,4 @@ ADD . /go/src/github.com/loganjspears/slackchess
 RUN go install github.com/loganjspears/slackchess/cmd/slackchess
 
 # Run the command by default when the container starts.
-ENTRYPOINT /go/bin/slackchess -token=$TOKEN -url=$URL
-
-# Document that the service listens on port 5000.
-EXPOSE 5000
+CMD /go/bin/slackchess -token=$TOKEN -url=$URL -port=$PORT
