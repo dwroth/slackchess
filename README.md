@@ -1,7 +1,10 @@
 # slackchess
-[![Build Status](https://travis-ci.org/loganjspears/slackchess.svg?branch=master)](https://travis-ci.org/loganjspears/slackchess)
 
-How can you play chess on any device?  
+## Modifications
+
+This is a modification of the slackchess client build by user NotNil (Logan Spears) for deployment on Digital Ocean.  This fork of the repository includes changes necessary to deploy the slackbot to Heroku, a free alternative to to Digital Ocean.
+
+## How can you play chess on any device?  
 
 Slack!  
 
@@ -15,18 +18,6 @@ This project gives you a turn key solution for tranforming slack into a chess cl
 <img src="https://raw.githubusercontent.com/loganjspears/slackchess/master/screen_shots/screen_shot_1.png" width="600">
 
 ## Installation Guide
-
-To start the Slack Integration Guide you will need the IP or URL of your server.  If you don't already have a place to host slackchess, you can follow the Digital Ocean Setup Guide first.  After the Slack Integration is setup, you should follow the Server Setup Guide.  The Server Setup Guide will guide you through pulling down the [docker image](https://hub.docker.com/r/loganjspears/slackchess/) and running it as a container.  
-
-### Digital Ocean Setup Guide
-
-1. Signup for Digital Ocean if you don't have an account (https://m.do.co/c/f4609bed935c referal link to get $10 free)
-2. Click Create Droplet
-3. Select One-click Apps > Docker 
-4. Choose smallest size
-5. Make sure to add your SSH keys (if you need help click "New SSH Key > How to use SSH keys")
-6. Select 1 droplet
-7. Click Create
 
 ### Slack Integration Guide
 
@@ -42,26 +33,42 @@ To start the Slack Integration Guide you will need the IP or URL of your server.
 
 ![slack integration](/screen_shots/screen_shot_3.png)
 
-### Server Setup Guide
+### Heroku Setup
 
-If you added your SSH keys to your local machine (you should have in the Digital Ocean Setup Guide), you can SSH into your machine.  Replace "45.55.141.331" with your IP. 
-```bash
-ssh root@45.55.141.331
+First install docker and heroku on your development machine.
+
+Install the container-registry plugin by running:
+```
+heroku plugins:install heroku-container-registry
 ```
 
-Pull down the docker image from Docker Hub.
-```bash
-docker pull loganjspears/slackchess
+Log in to the Heroku container registry:
 ```
- 
-Create and run a docker container with your information. Replace "R546Sk2RoZiAXZltssJ4WfEO" with your Slack token.  Replace "45.55.141.331" with your IP.  
-```bash
-docker run -d -p 80:5000 -e TOKEN=R546Sk2RoZiAXZltssJ4WfEO -e URL=http://45.55.141.331 loganjspears/slackchess
+heroku container:login
 ```
 
-If everything worked the ps command should show the container running.  
-```bash
-docker ps
+Navigate to the root of the project directory and create your heroku server:
+```
+heroku create
+```
+
+### Heroku Config
+
+The last step of the setup process is to add the token and url parameters to the heroku configuratoin page.
+
+Login to heroku, and select your app from the list of available applications.  Click settings and locate the option for "Config Variables".
+
+Add two new variables:
+```
+TOKEN: [The token set in the slack config screen]
+URL: [https://theUrlOfYourHerokuServer.com]
+```
+
+### Push it up
+
+Push the code up to Heroku and start it running
+```
+hroku container:push web
 ```
 
 Thats it!
