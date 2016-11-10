@@ -46,13 +46,18 @@ type SlashCmd struct {
 // Response returns the response to the given command.
 func (s *SlashCmd) Response() *Response {
 	cmd := userEntryFromText(s.Text)
+	g, _ := s.Game()
+	
 	switch cmd.Type {
 	case cmdUnknown:
 		return unknownResponse
 	case cmdHelp:
 		return helpResponse
 	case cmdPlay:
-		var g *chess.Game
+		if (g != nil && g.Outcome() == chess.NoOutcome) {
+			return alreadyInGameResponse
+		}
+
 		switch cmd.Args[1] {
 		case "", "white":
 			g = chessutil.NewGame(s.UserName, cmd.Args[0])
@@ -75,7 +80,7 @@ func (s *SlashCmd) Response() *Response {
 		}
 		return boardResponse(g)
 	}
-	g, _ := s.Game()
+
 	if g == nil {
 		return noGameResponse
 	}
@@ -83,6 +88,7 @@ func (s *SlashCmd) Response() *Response {
 	if c == chess.NoColor {
 		return notInGameResponse
 	}
+	
 	switch cmd.Type {
 	case cmdMove:
 		player := chessutil.PlayerToMove(g)
